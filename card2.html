@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Pay Advice</title>
+    <style>
+      body {
+        font-family: "Courier New", Courier, monospace; /* 使用等宽字体模拟老式打印机/系统导出 */
+        background-color: #ccc;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .page {
+        width: 8.5in;
+        background: white;
+        padding: 0.5in;
+        box-sizing: border-box;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        font-size: 11px;
+        color: #000;
+      }
+
+      /* 顶部标题栏 */
+      .header {
+        border-bottom: 2px dashed #000;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .district-info h1 {
+        font-size: 14px;
+        font-weight: bold;
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+      .advice-info {
+        text-align: right;
+      }
+
+      /* 员工信息网格 */
+      .emp-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #000;
+        padding-bottom: 10px;
+      }
+
+      .emp-label {
+        font-size: 10px;
+        color: #555;
+      }
+      .emp-data {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      /* 财务表格 */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+        font-size: 10px;
+      }
+
+      th {
+        text-align: left;
+        border-bottom: 1px solid #000;
+        padding: 3px 0;
+        text-transform: uppercase;
+      }
+
+      td {
+        padding: 2px 0;
+      }
+
+      .amount {
+        text-align: right;
+      }
+      .total-row {
+        border-top: 1px solid #000;
+        font-weight: bold;
+      }
+
+      /* 底部 */
+      .footer {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 10px;
+        border-top: 2px dashed #000;
+        padding-top: 10px;
+        background-color: #f9f9f9;
+        padding: 10px;
+      }
+
+      .watermark {
+        text-align: center;
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+      }
+
+      /* 控制面板 */
+      .controls {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: 250px;
+        background: white;
+        padding: 15px;
+        border: 2px solid #333;
+        z-index: 100;
+        font-family: Arial, sans-serif;
+      }
+      .controls input {
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 5px;
+      }
+      .btn {
+        width: 100%;
+        padding: 8px;
+        background: #000;
+        color: white;
+        cursor: pointer;
+        border: none;
+        font-weight: bold;
+      }
+
+      @media print {
+        body {
+          background: white;
+          padding: 0;
+        }
+        .controls {
+          display: none;
+        }
+        .page {
+          width: 100%;
+          box-shadow: none;
+          margin: 0;
+          padding: 0.5in;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="district-info">
+          <h1 id="outSchool">Liberty Public Schools</h1>
+          <div>8000 Liberty Drive, Pleasant Valley, MO 64068</div>
+          <div>Tax ID: 44-0019281</div>
+        </div>
+        <div class="advice-info">
+          <div style="font-weight: bold; font-size: 16px">
+            DIRECT DEPOSIT ADVICE
+          </div>
+          <div>Advice #: 00992812</div>
+          <div>Run Date: <span id="runDate"></span></div>
+        </div>
+      </div>
+
+      <div class="emp-grid">
+        <div>
+          <div class="emp-label">EMPLOYEE NAME</div>
+          <div class="emp-data" id="outName">Michael A. Davis</div>
+        </div>
+        <div>
+          <div class="emp-label">EMPLOYEE ID</div>
+          <div class="emp-data">E-882910</div>
+        </div>
+        <div>
+          <div class="emp-label">CHECK DATE</div>
+          <div class="emp-data" id="checkDate"></div>
+        </div>
+        <div>
+          <div class="emp-label">DEPARTMENT</div>
+          <div class="emp-data">HS SOCIAL STUDIES</div>
+        </div>
+        <div>
+          <div class="emp-label">PAY PERIOD</div>
+          <div class="emp-data" id="payPeriod"></div>
+        </div>
+        <div>
+          <div class="emp-label">TAX STATUS</div>
+          <div class="emp-data">MARRIED / 2 EXEMPT</div>
+        </div>
+      </div>
+
+      <div style="font-weight: bold; margin-bottom: 5px">EARNINGS</div>
+      <table>
+        <thead>
+          <tr>
+            <th width="40%">Description</th>
+            <th width="15%">Rate</th>
+            <th width="15%">Hours/Units</th>
+            <th width="15%" class="amount">Current</th>
+            <th width="15%" class="amount">YTD</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TEACHER SALARY - CERTIFICATED</td>
+            <td>--</td>
+            <td>1.00</td>
+            <td class="amount">4,833.33</td>
+            <td class="amount">43,499.97</td>
+          </tr>
+          <tr>
+            <td>STIPEND - DEPT HEAD</td>
+            <td>--</td>
+            <td>--</td>
+            <td class="amount">250.00</td>
+            <td class="amount">2,250.00</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="3">GROSS PAY</td>
+            <td class="amount">5,083.33</td>
+            <td class="amount">45,749.97</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="display: flex; gap: 20px">
+        <div style="flex: 1">
+          <div style="font-weight: bold; margin-bottom: 5px">TAXES</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th class="amount">Current</th>
+                <th class="amount">YTD</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>FEDERAL WITHHOLDING</td>
+                <td class="amount">521.10</td>
+                <td class="amount">4,689.90</td>
+              </tr>
+              <tr>
+                <td>SOCIAL SECURITY</td>
+                <td class="amount">315.17</td>
+                <td class="amount">2,836.53</td>
+              </tr>
+              <tr>
+                <td>MEDICARE</td>
+                <td class="amount">73.71</td>
+                <td class="amount">663.39</td>
+              </tr>
+              <tr>
+                <td>STATE MO WITHHOLDING</td>
+                <td class="amount">184.20</td>
+                <td class="amount">1,657.80</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="flex: 1">
+          <div style="font-weight: bold; margin-bottom: 5px">DEDUCTIONS</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th class="amount">Current</th>
+                <th class="amount">YTD</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>MEDICAL - BCBS</td>
+                <td class="amount">142.00</td>
+                <td class="amount">1,278.00</td>
+              </tr>
+              <tr>
+                <td>DENTAL</td>
+                <td class="amount">12.50</td>
+                <td class="amount">112.50</td>
+              </tr>
+              <tr>
+                <td>STRS (RETIREMENT)</td>
+                <td class="amount">508.33</td>
+                <td class="amount">4,574.97</td>
+              </tr>
+              <tr>
+                <td>NEA UNION DUES</td>
+                <td class="amount">45.00</td>
+                <td class="amount">405.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px; border: 1px solid #000; padding: 10px">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+          "
+        >
+          <div>NET PAY DISTRIBUTION:</div>
+          <div>CHECK AMOUNT: $3,281.32</div>
+        </div>
+        <div style="font-size: 10px; margin-top: 5px">
+          Chase Bank (Checking) ...9921: $3,281.32
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="watermark">NON-NEGOTIABLE • ADVICE OF DEPOSIT</div>
+        <div>
+          THIS IS NOT A CHECK. YOUR FUNDS HAVE BEEN DEPOSITED ELECTRONICALLY.
+        </div>
+        <div>
+          Skyward Financial Systems • Generated on <span id="genDate"></span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 日期逻辑：确保日期是“最近”的（比如本周五）
+      const today = new Date();
+
+      // 格式化函数
+      const fmt = (d) =>
+        d.toLocaleDateString("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+          year: "numeric",
+        });
+
+      // 1. Check Date (设置为今天)
+      document.getElementById("checkDate").innerText = fmt(today);
+      document.getElementById("runDate").innerText = fmt(today);
+      document.getElementById("genDate").innerText = fmt(today);
+
+      // 2. Pay Period (设置为当月1号到今天)
+      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+      document.getElementById("payPeriod").innerText =
+        fmt(firstDay) + " - " + fmt(today);
+
+      function update() {
+        document.getElementById("outName").innerText =
+          document.getElementById("inName").value;
+        document.getElementById("outSchool").innerText =
+          document.getElementById("inSchool").value;
+      }
+    </script>
+  </body>
+</html>

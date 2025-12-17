@@ -1,0 +1,6 @@
+httpx
+playwright
+fastapi
+uvicorn
+python-multipart
+websockets
